@@ -1,7 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.GameOver;
 import il.cshaifasweng.OCSFMediatorExample.entities.BoardStatus;
+import il.cshaifasweng.OCSFMediatorExample.entities.GameOver;
 import org.greenrobot.eventbus.EventBus;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
@@ -29,11 +29,18 @@ public class SimpleClient extends AbstractClient {
 		}
 	}
 
+	public static void initializeClient(String host, int port) {
+		client = new SimpleClient(host, port);
+	}
+
 	public static SimpleClient getClient() {
 		if (client == null) {
-			client = new SimpleClient("172.20.10.8", 3000);
+			throw new IllegalStateException("Client not initialized. Call initializeClient first.");
 		}
 		return client;
 	}
+	public static String number() {
 
+		return client.getHost();
+	}
 }

@@ -20,18 +20,16 @@ public class App extends Application {
 
     private static Scene scene;
     private static Stage stage;
-    private SimpleClient client;
     private boolean flag;
 
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
         flag = true;
-        client = SimpleClient.getClient();
-        client.openConnection();
         App.stage = stage;
-        scene = new Scene(loadFXML("primary"));
+        scene = new Scene(loadFXML("primary")); // Load the primary screen for IP and port entry
         stage.setScene(scene);
+        stage.setTitle("XO Game");
         stage.show();
     }
 
@@ -60,15 +58,13 @@ public class App extends Application {
         System.out.println("Game Over");
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                    String.format("Game Over, %s",
-                            message.getResult())
-                    , ButtonType.OK);
+                    String.format("Game Over, %s", message.getResult()), ButtonType.OK);
             alert.showAndWait();
             try {
                 scene = new Scene(loadFXML("primary"));
                 stage.setScene(scene);
                 stage.show();
-                flag = true;
+                flag = true; // Reset the flag for the next game session
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -78,9 +74,13 @@ public class App extends Application {
     @Override
     public void stop() throws Exception {
         EventBus.getDefault().unregister(this);
-        client.sendToServer("remove player");
-        System.out.println("remove player");
-        client.closeConnection();
+        try {
+            SimpleClient.getClient().sendToServer("remove player");
+            System.out.println("remove player");
+            SimpleClient.getClient().closeConnection();
+        } catch (Exception e) {
+            System.out.println("No active connection to close.");
+        }
         super.stop();
     }
 
@@ -93,9 +93,7 @@ public class App extends Application {
         return fxmlLoader.load();
     }
 
-
     public static void main(String[] args) {
         launch();
     }
-
 }

@@ -19,6 +19,7 @@ public class SimpleServer extends AbstractServer {
 	public SimpleServer(int port) {
 		super(port);
 		resetBoard();
+
 	}
 
 	@Override
